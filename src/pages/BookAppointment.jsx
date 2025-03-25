@@ -1,14 +1,18 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-const BookAppointment = ({ patientId }) => {
+const BookAppointment = ({ patientid: propPatientid }) => {
+    const { patientid: urlPatientid } = useParams(); // Get patientid from URL if available
+    const navigate = useNavigate();
     const [isVisible, setIsVisible] = useState(false);
+    const generateRandomId = () => Math.floor(Math.random() * 85) + 15;
     const [appointmentData, setAppointmentData] = useState({
-        dateTime: "",
-        doctorId: "",
-        reason: "",
-        consultationFee: "",
-        paymentMode: "",
+        appointmentid: generateRandomId(),
+        patientid: propPatientid || urlPatientid || "", // Use prop, then URL, fallback to empty
+        doctorid: "",
+        date: "",
+        time: "",
+        status: "Pending",
     });
 
     const doctors = [
@@ -21,42 +25,71 @@ const BookAppointment = ({ patientId }) => {
         setTimeout(() => setIsVisible(true), 50);
     }, []);
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log("Appointment Data:", appointmentData);
-        alert("Appointment booked successfully!");
-        handleClose();
+    // Ensure patientid is correctly set if received asynchronously
+    useEffect(() => {
+        setAppointmentData((prev) => ({
+            ...prev,
+            patientid: propPatientid || urlPatientid || prev.patientid,
+        }));
+    }, [propPatientid, urlPatientid]);
+
+    const handleClose = () => {
+        setIsVisible(false);
+        setTimeout(() => {
+            navigate(window.history.length > 1 ? -1 : "/patients");
+        }, 300);
     };
 
-    const navigate = useNavigate();
-
-const handleClose = () => {
-    setIsVisible(false);
-    setTimeout(() => {
-        if (window.history.length > 1) {
-            navigate(-1);  // Go back if history exists
-        } else {
-            navigate("/patients");  // Redirect to a safe page
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+    
+        const [datePart, timePart] = appointmentData.date.split("T"); // Splitting date and time
+    
+        const finalData = {
+            ...appointmentData,
+            date: datePart, // Keep date in YYYY-MM-DD format
+            time: timePart + ":00", // Ensure time format HH:mm:ss
+        };
+    
+        console.log("Final Appointment Data:", finalData);
+    
+        try {
+            const response = await fetch("http://localhost:8081/myapp/bookAppointment", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(finalData),
+            });
+    
+            if (response.ok) {
+                alert("Appointment booked successfully!");
+                handleClose();
+            } else {
+                alert("Failed to book appointment!");
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            alert("Something went wrong!");
         }
-    }, 300);
-};
-
+    };
+    
     return (
         <div className={`fixed inset-0 flex items-center justify-center backdrop-blur-md transition-opacity duration-500 ${isVisible ? "opacity-100" : "opacity-0"}`}>
             <div className={`bg-white p-6 rounded-lg shadow-lg text-center transition-all duration-500 transform ${isVisible ? "scale-105" : "scale-95"}`}>
-                <h3 className="text-lg font-semibold mb-4">Book Appointment for Patient ID: {patientId}</h3>
+                <h3 className="text-lg font-semibold mb-4">Book Appointment for Patient ID: {appointmentData.patientid}</h3>
 
                 <form onSubmit={handleSubmit} className="space-y-3">
                     <input
                         type="datetime-local"
                         className="w-full p-2 border rounded"
-                        onChange={(e) => setAppointmentData({ ...appointmentData, dateTime: e.target.value })}
+                        value={appointmentData.date}
+                        onChange={(e) => setAppointmentData({ ...appointmentData, date: e.target.value })}
                         required
                     />
 
                     <select
                         className="w-full p-2 border rounded"
-                        onChange={(e) => setAppointmentData({ ...appointmentData, doctorId: e.target.value })}
+                        value={appointmentData.doctorid}
+                        onChange={(e) => setAppointmentData({ ...appointmentData, doctorid: e.target.value })}
                         required
                     >
                         <option value="">Select Doctor</option>
@@ -65,31 +98,12 @@ const handleClose = () => {
                         ))}
                     </select>
 
-                    <textarea
-                        placeholder="Reason"
-                        className="w-full p-2 border rounded"
-                        onChange={(e) => setAppointmentData({ ...appointmentData, reason: e.target.value })}
-                        required
-                    />
-
                     <input
-                        type="number"
-                        placeholder="Consultation Fee"
-                        className="w-full p-2 border rounded"
-                        onChange={(e) => setAppointmentData({ ...appointmentData, consultationFee: e.target.value })}
-                        required
+                        type="text"
+                        className="w-full p-2 border rounded bg-gray-100"
+                        value={appointmentData.status}
+                        readOnly
                     />
-
-                    <select
-                        className="w-full p-2 border rounded"
-                        onChange={(e) => setAppointmentData({ ...appointmentData, paymentMode: e.target.value })}
-                        required
-                    >
-                        <option value="">Select Payment Mode</option>
-                        <option value="Cash">Cash</option>
-                        <option value="Card">Card</option>
-                        <option value="Online">Online</option>
-                    </select>
 
                     <button type="submit" className="w-full bg-blue-600 text-white p-3 rounded-lg shadow-md hover:bg-blue-700">
                         Book Appointment

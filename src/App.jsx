@@ -30,7 +30,7 @@ function App() {
             <Route path="/patients" element={<LazyPatients />} />
             <Route path="/reports" element={<LazyReports />} />
             <Route path="/patient-service" element={<LazyPatientServiceModel />} />
-            <Route path="/book-appointment/:patientId" element={<LazyBookApointment />} />
+            <Route path="/book-appointment/:patientid" element={<LazyBookApointment />} />
             <Route path="/register-patient" element={<LazyPatientRegister />} />
             <Route path="/registration-success" element={<LazyRegistrationResponse />} />
           </Routes>
