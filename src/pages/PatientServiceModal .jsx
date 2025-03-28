@@ -34,12 +34,12 @@ const PatientServiceModal = ({ closeModal }) => {
       >
         <h2 className="text-lg font-bold mb-4 text-center">Patient Service</h2>
 
-        <button
+        {/* <button
           className="flex items-center justify-center w-full p-3 mb-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700"
           onClick={handleBookAppointment}
         >
           Book Appointment
-        </button>
+        </button> */}
 
         <button
           className="flex items-center justify-center w-full p-3 mb-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700"

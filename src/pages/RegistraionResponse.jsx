@@ -19,8 +19,10 @@ export default function RegistrationResponse() {
   };
 
   const handleBookAppointment = () => {
-    navigate("/book-appointment", { state: {patientData: patientinfo, patient: patientinfo } });
+    closeModal();
+    navigate(`/book-appointment/${patientId}`); // Ensure patientId is available
   };
+  
 
   return (
     <div
@@ -62,7 +64,7 @@ export default function RegistrationResponse() {
         <div className="flex justify-between mt-4">
           <button
             className="w-[48%] p-3 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700"
-            onClick={handleBookAppointment}
+            onClick={() => navigate(`/book-appointment/${patientinfo.patientid}`)}
           >
             Book Appointment
           </button>
