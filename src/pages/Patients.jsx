@@ -20,27 +20,67 @@ const Patients = memo(() => {
         const fetchPatients = async () => {
             try {
                 setLoading(true);
-                const url = searchQuery
-                    ? `${API_BASE_URL}/searchpatientsByName/${searchQuery}`
-                    : `${API_BASE_URL}/getAllPatients`;
-
-                const response = await axios.get(url);
-                const mappedPatients = response.data.map(patient => ({
-                    id: patient.patientid || "N/A",
-                    name: patient.name || patient.fullName || "Unknown",
-                    gender: patient.gender || "N/A",
-                    familyCode: patient.familycode || "N/A",
-                    MobileNumber: patient.mobilenumber || "N/A"
+                const dummyData = [
+                    {
+                        patientid: "101",
+                        name: "Rohan Mehta",
+                        gender: "Male",
+                        familycode: "FAM001",
+                        mobilenumber: "9876543210"
+                    },
+                    {
+                        patientid: "102",
+                        name: "Sneha Kulkarni",
+                        gender: "Female",
+                        familycode: "FAM002",
+                        mobilenumber: "9123456789"
+                    },
+                    {
+                        patientid: "103",
+                        name: "Aarav Sharma",
+                        gender: "Male",
+                        familycode: "FAM003",
+                        mobilenumber: "9988776655"
+                    },
+                    {
+                        patientid: "104",
+                        name: "Anaya Patil",
+                        gender: "Female",
+                        familycode: "FAM004",
+                        mobilenumber: "9834567890"
+                    },
+                    {
+                        patientid: "105",
+                        name: "Yash Verma",
+                        gender: "Male",
+                        familycode: "FAM005",
+                        mobilenumber: "9001234567"
+                    }
+                ];
+    
+                const mappedPatients = dummyData.map(patient => ({
+                    id: patient.patientid,
+                    name: patient.name,
+                    gender: patient.gender,
+                    familyCode: patient.familycode,
+                    MobileNumber: patient.mobilenumber
                 }));
-
-                setPatients(mappedPatients);
+    
+                // Optional: filter by search
+                const filtered = searchQuery
+                    ? mappedPatients.filter((p) =>
+                        p.name.toLowerCase().startsWith(searchQuery.toLowerCase())
+                      )
+                    : mappedPatients;
+    
+                setPatients(filtered);
             } catch (error) {
                 console.error("Error fetching patients:", error);
             } finally {
                 setLoading(false);
             }
         };
-
+    
         const delaySearch = setTimeout(fetchPatients, 300);
         return () => clearTimeout(delaySearch);
     }, [searchQuery]);
@@ -157,36 +197,58 @@ const Patients = memo(() => {
                 <p className="text-gray-500">No patients found.</p>
             )}
 
-            {selectedPatientId && showButtons && (
-                <div className="fixed inset-0 flex items-center justify-center backdrop-blur-md transition-opacity duration-500">
-                    <div className="bg-white p-6 rounded-lg shadow-lg text-center transition-all duration-500 transform scale-105">
-                        <h3 className="text-lg font-semibold mb-4">Actions for Patient ID: {selectedPatientId}</h3>
-                        <div className="flex flex-col space-y-3">
-                            <button 
-                                onClick={() => navigate(`/book-appointment/${selectedPatientId}`)} 
-                                className="bg-green-500 text-white px-6 py-2 rounded-lg transition-all hover:bg-green-600"
-                            >
-                                Book Appointment
-                            </button>
-                            <button 
-                                onClick={() => handleUpdate(selectedPatientId)} 
-                                className="bg-blue-500 text-white px-6 py-2 rounded-lg transition-all hover:bg-blue-600"
-                            >
-                                Update
-                            </button>
-                            <button 
-                                onClick={() => handleDelete(selectedPatientId)} 
-                                className="bg-red-500 text-white px-6 py-2 rounded-lg transition-all hover:bg-red-600"
-                            >
-                                Delete
-                            </button>
-                        </div>
-                        <button onClick={() => { setSelectedPatientId(null); setShowButtons(false); }} className="mt-4 text-gray-500 hover:underline">
-                            Close
-                        </button>
-                    </div>
-                </div>
-            )}
+{selectedPatientId && showButtons && (
+  <div className="fixed inset-0 flex items-center justify-center backdrop-blur-md transition-opacity duration-500">
+    <div className="bg-white p-6 rounded-lg shadow-lg text-center transition-all duration-500 transform scale-105">
+      <h3 className="text-lg font-semibold mb-4">Actions for Patient ID: {selectedPatientId}</h3>
+      <div className="flex flex-col space-y-3">
+
+        {/* ✅ Book Appointment */}
+        <button 
+          onClick={() => navigate(`/book-appointment/${selectedPatientId}`)} 
+          className="bg-green-500 text-white px-6 py-2 rounded-lg transition-all hover:bg-green-600"
+        >
+          Book Appointment
+        </button>
+
+        {/* ✅ View Details */}
+        <button 
+          onClick={() => navigate(`/patients/${selectedPatientId}/Details`)} 
+          className="bg-purple-500 text-white px-6 py-2 rounded-lg transition-all hover:bg-purple-600"
+        >
+          Patient Details
+        </button>
+
+        {/* ✅ Update */}
+        <button 
+          onClick={() => handleUpdate(selectedPatientId)} 
+          className="bg-blue-500 text-white px-6 py-2 rounded-lg transition-all hover:bg-blue-600"
+        >
+          Update
+        </button>
+
+        {/* ✅ Delete */}
+        <button 
+          onClick={() => handleDelete(selectedPatientId)} 
+          className="bg-red-500 text-white px-6 py-2 rounded-lg transition-all hover:bg-red-600"
+        >
+          Delete
+        </button>
+      </div>
+
+      {/* ✅ Close */}
+      <button
+        onClick={() => {
+          setSelectedPatientId(null);
+          setShowButtons(false);
+        }}
+        className="mt-4 text-gray-500 hover:underline"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+)}
 
             {showUpdateForm && <UpdateForm patientData={selectedPatientData} onClose={() => setShowUpdateForm(false)} />}
         </div>

@@ -19,7 +19,7 @@ const LazyBookApointment=lazy(()=>import("./pages/BookAppointment"));
 const LazyPatientRegister=lazy(()=>import("./pages/PatientRegistration"));
 const LazyRegistrationResponse=lazy(()=>import("./pages/RegistraionResponse"));
 const LazyUpdateForm=lazy(()=>import("./pages/UpdateForm"));
-
+import Details from "./pages/Details";
 
 function App() {
   return (
@@ -36,7 +36,8 @@ function App() {
             <Route path="/register-patient" element={<LazyPatientRegister />} />
             <Route path="/registration-success" element={<LazyRegistrationResponse />} />
             <Route path="/updateform/:patientId" element={<LazyUpdateForm />} />
-
+            <Route path="/patients/:id/Details" element={<Details />} />
+            
           </Routes>
         </Suspense>
       </DashboardLayout>
