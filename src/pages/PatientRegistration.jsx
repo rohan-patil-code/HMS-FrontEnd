@@ -98,7 +98,7 @@ export default function PatientRegistration() {
             ].map(({ label, name, type, disabled }) => (
               <div key={name} className="flex flex-col">
                 <label htmlFor={name} className="text-sm font-semibold text-gray-600">{label}</label>
-                <Input id={name} name={name} type={type} value={patient[name]} onChange={handleChange} disabled={disabled} className="rounded-lg shadow-sm border-gray-300" />
+                <Input id={name} name={name} type={type} value={patient[name]} onChange={handleChange} disabled={disabled} className="rounded-lg shadow-sm border-gray-300 p-1.5" />
               </div>
             ))}
 
