@@ -3,30 +3,41 @@ import { useParams, useNavigate } from "react-router-dom";
 
 // Reuse the same dummy data
 const dummyPatients = [
-  {
-    patientid: "101",
-    name: "Rohan Mehta",
-    gender: "Male",
-    dob: "1995-07-15",
-    email: "rohan.mehta@example.com",
-    familycode: "FAM001",
-    mobilenumber: "9876543210",
-    vipstatus: true,
-    referredby: "Doctor",
-    address: "Pune, MH"
-  },
-  {
-    patientid: "102",
-    name: "Sneha Kulkarni",
-    gender: "Female",
-    dob: "1997-03-22",
-    email: "sneha.k@example.com",
-    familycode: "FAM002",
-    mobilenumber: "9123456789",
-    vipstatus: false,
-    referredby: "Advertisement",
-    address: "Nashik, MH"
-  },
+    {
+        patientid: "101",
+        name: "Rohan Mehta",
+        gender: "Male",
+        familycode: "FAM001",
+        mobilenumber: "9876543210"
+    },
+    {
+        patientid: "102",
+        name: "Sneha Kulkarni",
+        gender: "Female",
+        familycode: "FAM002",
+        mobilenumber: "9123456789"
+    },
+    {
+        patientid: "103",
+        name: "Aarav Sharma",
+        gender: "Male",
+        familycode: "FAM003",
+        mobilenumber: "9988776655"
+    },
+    {
+        patientid: "104",
+        name: "Anaya Patil",
+        gender: "Female",
+        familycode: "FAM004",
+        mobilenumber: "9834567890"
+    },
+    {
+        patientid: "105",
+        name: "Yash Verma",
+        gender: "Male",
+        familycode: "FAM005",
+        mobilenumber: "9001234567"
+    }
   // Add more patients if needed
 ];
 
