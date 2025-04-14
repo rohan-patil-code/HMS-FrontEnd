@@ -12,18 +12,27 @@ const Appointments = () => {
     const fetchAppointments = async () => {
       try {
         setLoading(true);
-        const response = await fetch('http://localhost:8081/myapp/TodaysAPT');
+        const response = await fetch("http://localhost:8081/myapp/TodaysAPT");
         const data = await response.json();
-        setAppointments(data || []);
+        
+        console.log("API Response:", data); // Debugging: Check the API response
+  
+        if (Array.isArray(data)) {
+          setAppointments(data);
+        } else {
+          setAppointments([]); // Fallback to empty array
+        }
       } catch (error) {
         console.error("Error fetching appointments:", error);
+        setAppointments([]); // Set to empty array in case of failure
       } finally {
         setLoading(false);
       }
     };
-
+  
     fetchAppointments();
   }, []);
+  
 
   // Calculate current appointments to display
   const indexOfLastAppointment = currentPage * appointmentsPerPage;

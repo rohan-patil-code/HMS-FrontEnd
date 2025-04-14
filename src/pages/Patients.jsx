@@ -1,5 +1,6 @@
 import React, { memo, useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import UpdateForm from "./UpdateForm";
 import axios from "axios";
 
 const Patients = memo(() => {
@@ -8,7 +9,9 @@ const Patients = memo(() => {
     const [searchQuery, setSearchQuery] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedPatientId, setSelectedPatientId] = useState(null);
+    const [selectedPatientData, setSelectedPatientData] = useState(null);
     const [showButtons, setShowButtons] = useState(false);
+    const [showUpdateForm, setShowUpdateForm] = useState(false);
     const navigate = useNavigate();
     const patientsPerPage = 10;
     const API_BASE_URL = "http://localhost:8081/myapp";
@@ -73,6 +76,16 @@ const Patients = memo(() => {
             setTimeout(() => {
                 setShowButtons(true);
             }, 300);
+        }
+    };
+
+    const handleUpdate = async (id) => {
+        try {
+            const response = await axios.get(`${API_BASE_URL}/updatePatient/${id}`);
+            setSelectedPatientData(response.data);
+            setShowUpdateForm(true);
+        } catch (error) {
+            console.error("Error fetching patient details:", error);
         }
     };
 
@@ -156,7 +169,7 @@ const Patients = memo(() => {
                                 Book Appointment
                             </button>
                             <button 
-                                onClick={() => alert(`Update functionality for Patient ID: ${selectedPatientId}`)} 
+                                onClick={() => handleUpdate(selectedPatientId)} 
                                 className="bg-blue-500 text-white px-6 py-2 rounded-lg transition-all hover:bg-blue-600"
                             >
                                 Update
@@ -174,6 +187,8 @@ const Patients = memo(() => {
                     </div>
                 </div>
             )}
+
+            {showUpdateForm && <UpdateForm patientData={selectedPatientData} onClose={() => setShowUpdateForm(false)} />}
         </div>
     );
 });

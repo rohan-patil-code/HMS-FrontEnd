@@ -8,6 +8,7 @@ import PatientServiceModal from "./pages/PatientServiceModal ";
 import BookAppointment from "./pages/BookAppointment";
 import PatientRegistration from "./pages/PatientRegistration";
 import RegistrationResponse from "./pages/RegistraionResponse";
+import UpdateForm from "./pages/UpdateForm";
 // Lazy loading for better performance
 const LazyDashBoard= lazy(()=> import("./pages/DashBoard"));
 const LazyAppointments = lazy(() => import("./pages/Appointments"));
@@ -17,6 +18,7 @@ const LazyPatientServiceModel=lazy(()=>import("./pages/PatientServiceModal "));
 const LazyBookApointment=lazy(()=>import("./pages/BookAppointment"));
 const LazyPatientRegister=lazy(()=>import("./pages/PatientRegistration"));
 const LazyRegistrationResponse=lazy(()=>import("./pages/RegistraionResponse"));
+const LazyUpdateForm=lazy(()=>import("./pages/UpdateForm"));
 
 
 function App() {
@@ -33,6 +35,8 @@ function App() {
             <Route path="/book-appointment/:patientid" element={<LazyBookApointment />} />
             <Route path="/register-patient" element={<LazyPatientRegister />} />
             <Route path="/registration-success" element={<LazyRegistrationResponse />} />
+            <Route path="/updateform/:patientId" element={<LazyUpdateForm />} />
+
           </Routes>
         </Suspense>
       </DashboardLayout>
