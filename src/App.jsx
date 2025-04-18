@@ -37,7 +37,7 @@ function App() {
             <Route path="/register-patient" element={<LazyPatientRegister />} />
             <Route path="/registration-success" element={<LazyRegistrationResponse />} />
             <Route path="/updateform/:patientId" element={<LazyUpdateForm />} />
-            <Route path="/patients/:id/Details" element={<Details />} />
+            <Route path="/patients/:patientId/Details" element={<Details />} />
             <Route path="/add-prescription/:patientId" element={<AddPrescriptionPage />} />
             
 
