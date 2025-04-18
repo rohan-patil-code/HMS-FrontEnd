@@ -128,6 +128,7 @@ const Patients = memo(() => {
             console.error("Error fetching patient details:", error);
         }
     };
+    
 
     return (
         <div className="bg-white p-6 shadow rounded-lg mx-auto w-full transition-all duration-300">
