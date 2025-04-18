@@ -19,6 +19,9 @@ const LazyBookApointment=lazy(()=>import("./pages/BookAppointment"));
 const LazyPatientRegister=lazy(()=>import("./pages/PatientRegistration"));
 const LazyRegistrationResponse=lazy(()=>import("./pages/RegistraionResponse"));
 const LazyUpdateForm=lazy(()=>import("./pages/UpdateForm"));
+import AddPrescriptionPage from "./pages/AddPrescriptionPage";
+import Appointments from "./pages/Appointments";
+
 import Details from "./pages/Details";
 
 function App() {
@@ -37,7 +40,8 @@ function App() {
             <Route path="/registration-success" element={<LazyRegistrationResponse />} />
             <Route path="/updateform/:patientId" element={<LazyUpdateForm />} />
             <Route path="/patients/:id/Details" element={<Details />} />
-            
+            <Route path="/add-prescription/:patientId" element={<AddPrescriptionPage />} />
+            <Route path="/appointment" element={<Appointments />} />
           </Routes>
         </Suspense>
       </DashboardLayout>
