@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { FaCheck, FaClock, FaTimes, FaSpinner } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
@@ -8,7 +8,6 @@ const Appointments = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [updatingId, setUpdatingId] = useState(null);
   const [selectedPatientId, setSelectedPatientId] = useState(null);
-  const [showButtons, setShowButtons] = useState(false);
   const appointmentsPerPage = 10;
   const navigate = useNavigate();
 
@@ -31,10 +30,15 @@ const Appointments = () => {
 
   const indexOfLastAppointment = currentPage * appointmentsPerPage;
   const indexOfFirstAppointment = indexOfLastAppointment - appointmentsPerPage;
-  const currentAppointments = appointments.slice(indexOfFirstAppointment, indexOfLastAppointment);
-  const totalPages = Math.ceil(appointments.length / appointmentsPerPage);
 
-  const getStatusBadge = (status) => {
+  // Memoized computation for pagination data
+  const currentAppointments = useMemo(() => {
+    return appointments.slice(indexOfFirstAppointment, indexOfLastAppointment);
+  }, [appointments, currentPage]);
+
+  const totalPages = useMemo(() => Math.ceil(appointments.length / appointmentsPerPage), [appointments]);
+
+  const getStatusBadge = useCallback((status) => {
     switch (status.toLowerCase()) {
       case "completed":
         return "bg-green-100 text-green-800";
@@ -48,7 +52,7 @@ const Appointments = () => {
       default:
         return "bg-gray-100 text-gray-800";
     }
-  };
+  }, []);
 
   const updateStatus = async (patientId, newStatus) => {
     try {
@@ -76,7 +80,7 @@ const Appointments = () => {
     }
   };
 
-  const getRowHighlightClass = (status) => {
+  const getRowHighlightClass = useCallback((status) => {
     switch (status?.toLowerCase()) {
       case "completed":
         return "bg-green-50";
@@ -87,21 +91,19 @@ const Appointments = () => {
       default:
         return "";
     }
-  };
+  }, []);
 
-  const handleRowClick = (id) => {
+  const handleRowClick = useCallback((id) => {
     setSelectedPatientId(id);
-    setShowButtons(true);
-  };
+  }, []);
 
-  const goToNextPage = () => {
+  const goToNextPage = useCallback(() => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
-  };
+  }, [currentPage, totalPages]);
 
-  const goToPrevPage = () => {
+  const goToPrevPage = useCallback(() => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
-  };
-  
+  }, [currentPage]);
 
   if (loading) {
     return <div className="p-4 text-center">Loading appointments...</div>;
@@ -122,7 +124,6 @@ const Appointments = () => {
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Age</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
-            
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
             </tr>
@@ -136,7 +137,6 @@ const Appointments = () => {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{appointment.dob}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{appointment.time}</td>
-                {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{appointment.time}</td> */}
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadge(appointment.status)}`}>
                     {appointment.status}

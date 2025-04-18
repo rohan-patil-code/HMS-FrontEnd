@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios"; // We'll use axios for API call (you can use fetch too)
 
 const Details = () => {
-  const { id } = useParams(); // Patient ID from URL
+ // Patient ID from URL
   const navigate = useNavigate();
   const [patient, setPatient] = useState(null);
   const [loading, setLoading] = useState(true); // For loading state
@@ -13,7 +13,7 @@ const Details = () => {
   useEffect(() => {
     const fetchPatient = async () => {
       try {
-        const response = await axios.get(`http://localhost:8081/getPatientByID/${patientId}`);
+        const response = await axios.get(`http://localhost:8081/myapp/getPatientByID/${patientId}`);
         setPatient(response.data);
       } catch (err) {
         setError("Failed to fetch patient data.");
@@ -23,7 +23,7 @@ const Details = () => {
     };
 
     fetchPatient();
-  }, [id]);
+  }, [patientId]);
 
   if (loading) {
     return <div className="p-6 text-center text-gray-500">Loading patient details...</div>;

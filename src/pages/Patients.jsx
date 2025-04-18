@@ -1,7 +1,8 @@
-import React, { memo, useEffect, useState, useMemo } from "react";
+import React, { memo, useEffect, useState, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import UpdateForm from "./UpdateForm";
 import axios from "axios";
+import { debounce } from 'lodash';  // Using lodash for debounce
 
 const Patients = memo(() => {
     const [patients, setPatients] = useState([]);
@@ -15,6 +16,11 @@ const Patients = memo(() => {
     const navigate = useNavigate();
     const patientsPerPage = 10;
     const API_BASE_URL = "http://localhost:8081/myapp";
+
+    // Debounced search input handler
+    const handleSearchQueryChange = useCallback(
+        debounce((query) => setSearchQuery(query), 300), []
+    );
 
     useEffect(() => {
         const fetchPatients = async () => {
@@ -41,8 +47,7 @@ const Patients = memo(() => {
             }
         };
 
-        const delaySearch = setTimeout(fetchPatients, 300);
-        return () => clearTimeout(delaySearch);
+        fetchPatients();
     }, [searchQuery]);
 
     const currentPatients = useMemo(() => {
@@ -88,6 +93,7 @@ const Patients = memo(() => {
             console.error("Error fetching patient details:", error);
         }
     };
+
     return (
         <div className="bg-white p-6 shadow rounded-lg mx-auto w-full transition-all duration-300">
             <h2 className="text-2xl font-semibold mb-6 text-gray-700">Patients List</h2>
@@ -95,8 +101,7 @@ const Patients = memo(() => {
             <input
                 type="text"
                 placeholder="Search patients..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => handleSearchQueryChange(e.target.value)}
                 className="w-full mb-4 px-4 py-2 border border-gray-300 rounded focus:ring focus:ring-blue-300"
             />
 
@@ -116,9 +121,7 @@ const Patients = memo(() => {
                             {currentPatients.map(({ id, name, gender, familyCode, MobileNumber }) => (
                                 <React.Fragment key={id}>
                                     <tr 
-                                        className={`cursor-pointer transition-all duration-500 relative ${
-                                            selectedPatientId === id ? "translate-x-[-50px] opacity-50" : "hover:bg-gray-50"
-                                        }`}
+                                        className={`cursor-pointer transition-all duration-500 relative ${selectedPatientId === id ? "translate-x-[-50px] opacity-50" : "hover:bg-gray-50"}`}
                                         onClick={() => handleRowClick(id)}
                                     >
                                         {[id, name, gender, familyCode, MobileNumber].map((value, index) => (
@@ -134,9 +137,7 @@ const Patients = memo(() => {
                         <button 
                             onClick={prevPage} 
                             disabled={currentPage === 1} 
-                            className={`px-4 py-2 rounded-lg transition-all ${
-                                currentPage === 1 ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "bg-blue-500 text-white hover:bg-blue-600"
-                            }`}
+                            className={`px-4 py-2 rounded-lg transition-all ${currentPage === 1 ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "bg-blue-500 text-white hover:bg-blue-600"}`}
                         >
                             Previous
                         </button>
@@ -144,9 +145,7 @@ const Patients = memo(() => {
                         <button 
                             onClick={nextPage} 
                             disabled={currentPage >= Math.ceil(patients.length / patientsPerPage)} 
-                            className={`px-4 py-2 rounded-lg transition-all ${
-                                currentPage >= Math.ceil(patients.length / patientsPerPage) ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "bg-blue-500 text-white hover:bg-blue-600"
-                            }`}
+                            className={`px-4 py-2 rounded-lg transition-all ${currentPage >= Math.ceil(patients.length / patientsPerPage) ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "bg-blue-500 text-white hover:bg-blue-600"}`}
                         >
                             Next
                         </button>
@@ -156,60 +155,53 @@ const Patients = memo(() => {
                 <p className="text-gray-500">No patients found.</p>
             )}
 
-{selectedPatientId && showButtons && (
-  <div className="fixed inset-0 flex items-center justify-center backdrop-blur-md transition-opacity duration-500">
-    <div className="bg-white p-6 rounded-lg shadow-lg text-center transition-all duration-500 transform scale-105">
-      <h3 className="text-lg font-semibold mb-4">Actions for Patient ID: {selectedPatientId}</h3>
-      <div className="flex flex-col space-y-3">
+            {selectedPatientId && showButtons && (
+                <div className="fixed inset-0 flex items-center justify-center backdrop-blur-md transition-opacity duration-500">
+                    <div className="bg-white p-6 rounded-lg shadow-lg text-center transition-all duration-500 transform scale-105">
+                        <h3 className="text-lg font-semibold mb-4">Actions for Patient ID: {selectedPatientId}</h3>
+                        <div className="flex flex-col space-y-3">
+                            {/* Action Buttons */}
+                            <button 
+                                onClick={() => navigate(`/book-appointment/${selectedPatientId}`)} 
+                                className="bg-green-500 text-white px-6 py-2 rounded-lg transition-all hover:bg-green-600"
+                            >
+                                Book Appointment
+                            </button>
+                            <button 
+                                onClick={() => navigate(`/patients/${selectedPatientId}/Details`)} 
+                                className="bg-purple-500 text-white px-6 py-2 rounded-lg transition-all hover:bg-purple-600"
+                            >
+                                Patient Details
+                            </button>
+                            <button 
+                                onClick={() => handleUpdate(selectedPatientId)} 
+                                className="bg-blue-500 text-white px-6 py-2 rounded-lg transition-all hover:bg-blue-600"
+                            >
+                                Update
+                            </button>
+                            <button 
+                                onClick={() => handleDelete(selectedPatientId)} 
+                                className="bg-red-500 text-white px-6 py-2 rounded-lg transition-all hover:bg-red-600"
+                            >
+                                Delete
+                            </button>
+                        </div>
+                        <button
+                            onClick={() => {
+                                setSelectedPatientId(null);
+                                setShowButtons(false);
+                            }}
+                            className="mt-4 text-gray-500 hover:underline"
+                        >
+                            Close
+                        </button>
+                    </div>
+                </div>
+            )}
 
-        {/* ✅ Book Appointment */}
-        <button 
-          onClick={() => navigate(`/book-appointment/${selectedPatientId}`)} 
-          className="bg-green-500 text-white px-6 py-2 rounded-lg transition-all hover:bg-green-600"
-        >
-          Book Appointment
-        </button>
-
-        {/* ✅ View Details */}
-        <button 
-          onClick={() => navigate(`/patients/${selectedPatientId}/Details`)} 
-          className="bg-purple-500 text-white px-6 py-2 rounded-lg transition-all hover:bg-purple-600"
-        >
-          Patient Details
-        </button>
-
-        {/* ✅ Update */}
-        <button 
-          onClick={() => handleUpdate(selectedPatientId)} 
-          className="bg-blue-500 text-white px-6 py-2 rounded-lg transition-all hover:bg-blue-600"
-        >
-          Update
-        </button>
-
-        {/* ✅ Delete */}
-        <button 
-          onClick={() => handleDelete(selectedPatientId)} 
-          className="bg-red-500 text-white px-6 py-2 rounded-lg transition-all hover:bg-red-600"
-        >
-          Delete
-        </button>
-      </div>
-
-      {/* ✅ Close */}
-      <button
-        onClick={() => {
-          setSelectedPatientId(null);
-          setShowButtons(false);
-        }}
-        className="mt-4 text-gray-500 hover:underline"
-      >
-        Close
-      </button>
-    </div>
-  </div>
-)}
-
-            {showUpdateForm && <UpdateForm patientData={selectedPatientData} onClose={() => setShowUpdateForm(false)} />}
+            {showUpdateForm && (
+                <UpdateForm patientId={selectedPatientId} patientData={selectedPatientData} />
+            )}
         </div>
     );
 });
