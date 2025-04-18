@@ -5,7 +5,10 @@ const stats = [
     { title: "Total Appointments", count: 120, icon: FaCalendarCheck, bgColor: "bg-blue-100", hoverColor: "hover:bg-blue-200" },
     { title: "Total Patients", count: 85, icon: FaUserInjured, bgColor: "bg-green-100", hoverColor: "hover:bg-green-200" },
     { title: "Remaining Patients", count: 25, icon: FaUserClock, bgColor: "bg-yellow-100", hoverColor: "hover:bg-yellow-200" },
-    { title: "Checked Patients", count: 60, icon: FaUserCheck, bgColor: "bg-red-100", hoverColor: "hover:bg-red-200" }
+    { title: "Checked Patients", count: 60, icon: FaUserCheck, bgColor: "bg-red-100", hoverColor: "hover:bg-red-200" },
+    // New stats for morning and evening sessions
+    { title: "Morning Sessions", count: 45, icon: FaCalendarCheck, bgColor: "bg-purple-100", hoverColor: "hover:bg-purple-200" },
+    { title: "Evening Sessions", count: 30, icon: FaCalendarCheck, bgColor: "bg-teal-100", hoverColor: "hover:bg-teal-200" }
 ];
 
 const patients = [
