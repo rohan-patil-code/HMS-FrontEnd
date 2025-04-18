@@ -1,6 +1,7 @@
 // src/pages/AddPrescriptionPage.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const AddPrescriptionPage = () => {
   const [medicineList, setMedicineList] = useState([]);
@@ -62,23 +63,36 @@ const AddPrescriptionPage = () => {
 
   const submitBill = async () => {
     try {
-      const response = await fetch("http://localhost:8081/myapp/statusUpdate", {
+      const response = await fetch("http://192.168.25.139:8081/myapp/statusUpdate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ patientid: patientId, status: "completed" }),
       });
-
+  
       if (!response.ok) {
         throw new Error("Failed to update status");
       }
-
-      alert("Prescription submitted and appointment marked as Completed.");
-      navigate("/appointment");
+  
+      Swal.fire({
+        title: "Success!",
+        text: "Prescription submitted and appointment marked as Completed.",
+        icon: "success",
+        confirmButtonText: "OK",
+      }).then(() => {
+        navigate("/appointments");
+      });
+  
     } catch (error) {
       console.error("Error updating status:", error);
-      alert("Something went wrong while submitting the prescription.");
+      Swal.fire({
+        title: "Error!",
+        text: "Something went wrong while submitting the prescription.",
+        icon: "error",
+        confirmButtonText: "OK"
+      });
     }
   };
+  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">

@@ -16,7 +16,7 @@ const Appointments = () => {
     const fetchAppointments = async () => {
       try {
         setLoading(true);
-        const response = await fetch("http://localhost:8081/myapp/TodaysAPT");
+        const response = await fetch("http://192.168.25.139:8081/myapp/TodaysAPT");
         const data = await response.json();
         setAppointments(Array.isArray(data) ? data : []);
       } catch (error) {
@@ -53,7 +53,7 @@ const Appointments = () => {
   const updateStatus = async (patientId, newStatus) => {
     try {
       setUpdatingId(patientId);
-      const response = await fetch("http://localhost:8081/myapp/statusUpdate", {
+      const response = await fetch("http://192.168.25.139:8081/myapp/statusUpdate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ patientid: patientId, status: newStatus }),
@@ -108,7 +108,7 @@ const Appointments = () => {
   }
 
   return (
-    <div className="p-4 bg-white rounded-lg shadow relative">
+    <div className="p-4 bg-white rounded-md shadow relative">
       <h1 className="text-2xl font-bold mb-2">All Appointments</h1>
       <h2 className="text-lg font-semibold text-gray-600 mb-4">
         {appointments.length} Appointments
@@ -184,14 +184,12 @@ const Appointments = () => {
                 Add Prescription
               </button>
               <button
-                onClick={() => {
-                  const patient = appointments.find((p) => p.patientid === selectedPatientId);
-                  alert(`Fetching previous records for ${patient?.name}`);
-                }}
-                className="bg-indigo-500 text-white px-6 py-2 rounded-lg hover:bg-indigo-600"
-              >
-                View Previous Records
-              </button>
+  onClick={() => navigate(`/patient-history/${selectedPatientId}`)}
+  className="bg-indigo-500 text-white px-6 py-2 rounded-lg hover:bg-indigo-600"
+>
+  View Previous Records
+</button>
+
             </div>
             <button onClick={() => setSelectedPatientId(null)} className="mt-4 text-gray-500 hover:underline">
               Close
