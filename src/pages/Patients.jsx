@@ -20,67 +20,27 @@ const Patients = memo(() => {
         const fetchPatients = async () => {
             try {
                 setLoading(true);
-                const dummyData = [
-                    {
-                        patientid: "101",
-                        name: "Rohan Mehta",
-                        gender: "Male",
-                        familycode: "FAM001",
-                        mobilenumber: "9876543210"
-                    },
-                    {
-                        patientid: "102",
-                        name: "Sneha Kulkarni",
-                        gender: "Female",
-                        familycode: "FAM002",
-                        mobilenumber: "9123456789"
-                    },
-                    {
-                        patientid: "103",
-                        name: "Aarav Sharma",
-                        gender: "Male",
-                        familycode: "FAM003",
-                        mobilenumber: "9988776655"
-                    },
-                    {
-                        patientid: "104",
-                        name: "Anaya Patil",
-                        gender: "Female",
-                        familycode: "FAM004",
-                        mobilenumber: "9834567890"
-                    },
-                    {
-                        patientid: "105",
-                        name: "Yash Verma",
-                        gender: "Male",
-                        familycode: "FAM005",
-                        mobilenumber: "9001234567"
-                    }
-                ];
-    
-                const mappedPatients = dummyData.map(patient => ({
-                    id: patient.patientid,
-                    name: patient.name,
-                    gender: patient.gender,
-                    familyCode: patient.familycode,
-                    MobileNumber: patient.mobilenumber
+                const url = searchQuery
+                    ? `${API_BASE_URL}/searchpatientsByName/${searchQuery}`
+                    : `${API_BASE_URL}/getAllPatients`;
+
+                const response = await axios.get(url);
+                const mappedPatients = response.data.map(patient => ({
+                    id: patient.patientid || "N/A",
+                    name: patient.name || patient.fullName || "Unknown",
+                    gender: patient.gender || "N/A",
+                    familyCode: patient.familycode || "N/A",
+                    MobileNumber: patient.mobilenumber || "N/A"
                 }));
-    
-                // Optional: filter by search
-                const filtered = searchQuery
-                    ? mappedPatients.filter((p) =>
-                        p.name.toLowerCase().startsWith(searchQuery.toLowerCase())
-                      )
-                    : mappedPatients;
-    
-                setPatients(filtered);
+
+                setPatients(mappedPatients);
             } catch (error) {
                 console.error("Error fetching patients:", error);
             } finally {
                 setLoading(false);
             }
         };
-    
+
         const delaySearch = setTimeout(fetchPatients, 300);
         return () => clearTimeout(delaySearch);
     }, [searchQuery]);
@@ -128,7 +88,6 @@ const Patients = memo(() => {
             console.error("Error fetching patient details:", error);
         }
     };
-
     return (
         <div className="bg-white p-6 shadow rounded-lg mx-auto w-full transition-all duration-300">
             <h2 className="text-2xl font-semibold mb-6 text-gray-700">Patients List</h2>
