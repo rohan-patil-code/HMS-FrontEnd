@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import DashboardLayout from "./layouts/DashboardLayout";
-import Appointments from "./pages/Appointments";
 import Patients from "./pages/Patients";
 import Reports from "./pages/Reports";
 import { Suspense, lazy } from "react";
@@ -20,7 +19,6 @@ const LazyPatientRegister=lazy(()=>import("./pages/PatientRegistration"));
 const LazyRegistrationResponse=lazy(()=>import("./pages/RegistraionResponse"));
 const LazyUpdateForm=lazy(()=>import("./pages/UpdateForm"));
 import AddPrescriptionPage from "./pages/AddPrescriptionPage";
-import Appointments from "./pages/Appointments";
 
 import Details from "./pages/Details";
 
@@ -39,9 +37,10 @@ function App() {
             <Route path="/register-patient" element={<LazyPatientRegister />} />
             <Route path="/registration-success" element={<LazyRegistrationResponse />} />
             <Route path="/updateform/:patientId" element={<LazyUpdateForm />} />
-            <Route path="/patients/:id/Details" element={<Details />} />
+            <Route path="/patients/:patientId/Details" element={<Details />} />
             <Route path="/add-prescription/:patientId" element={<AddPrescriptionPage />} />
-            <Route path="/appointment" element={<Appointments />} />
+            
+
           </Routes>
         </Suspense>
       </DashboardLayout>

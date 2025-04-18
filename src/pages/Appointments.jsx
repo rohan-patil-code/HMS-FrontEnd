@@ -16,7 +16,7 @@ const Appointments = () => {
     const fetchAppointments = async () => {
       try {
         setLoading(true);
-        const response = await fetch("http://192.168.25.139:8081/myapp/TodaysAPT");
+        const response = await fetch("http://localhost:8081/myapp/TodaysAPT");
         const data = await response.json();
         setAppointments(Array.isArray(data) ? data : []);
       } catch (error) {
@@ -53,7 +53,7 @@ const Appointments = () => {
   const updateStatus = async (patientId, newStatus) => {
     try {
       setUpdatingId(patientId);
-      const response = await fetch("http://192.168.25.139:8081/myapp/statusUpdate", {
+      const response = await fetch("http://localhost:8081/myapp/statusUpdate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ patientid: patientId, status: newStatus }),
@@ -101,12 +101,12 @@ const Appointments = () => {
   const goToPrevPage = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
+  
 
   if (loading) {
     return <div className="p-4 text-center">Loading appointments...</div>;
   }
-  let dobt=appointments.dob;
-  console.log(dobt)
+
   return (
     <div className="p-4 bg-white rounded-lg shadow relative">
       <h1 className="text-2xl font-bold mb-2">All Appointments</h1>
@@ -122,7 +122,7 @@ const Appointments = () => {
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Age</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
-               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Age</th>
+            
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
             </tr>
@@ -136,6 +136,7 @@ const Appointments = () => {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{appointment.dob}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{appointment.time}</td>
+                {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{appointment.time}</td> */}
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadge(appointment.status)}`}>
                     {appointment.status}

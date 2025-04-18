@@ -15,8 +15,8 @@ const AddPrescriptionPage = () => {
   });
   const [discount, setDiscount] = useState(0);
   const navigate = useNavigate();
-  const { appointmentId } = useParams();
-
+  const { patientId } = useParams();
+  console.log("pateoinet",patientId)
   useEffect(() => {
     setMedicineList(["Paracetamol", "Ibuprofen", "Amoxicillin"]);
     setSymptomList(["Fever", "Cough", "Headache"]);
@@ -62,10 +62,10 @@ const AddPrescriptionPage = () => {
 
   const submitBill = async () => {
     try {
-      const response = await fetch("http://192.168.25.139:8081/myapp/statusUpdate", {
+      const response = await fetch("http://localhost:8081/myapp/statusUpdate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ patientid: appointmentId, status: "completed" }),
+        body: JSON.stringify({ patientid: patientId, status: "completed" }),
       });
 
       if (!response.ok) {
@@ -73,7 +73,7 @@ const AddPrescriptionPage = () => {
       }
 
       alert("Prescription submitted and appointment marked as Completed.");
-      navigate("/appointment"); // ✅ redirects to appointments page
+      navigate("/appointment");
     } catch (error) {
       console.error("Error updating status:", error);
       alert("Something went wrong while submitting the prescription.");
@@ -84,6 +84,7 @@ const AddPrescriptionPage = () => {
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-3xl">
         <h2 className="text-2xl font-bold mb-4">Add Prescription</h2>
+
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>

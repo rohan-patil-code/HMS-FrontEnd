@@ -1,55 +1,37 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-
-// Reuse the same dummy data
-const dummyPatients = [
-    {
-        patientid: "101",
-        name: "Rohan Mehta",
-        gender: "Male",
-        familycode: "FAM001",
-        mobilenumber: "9876543210"
-    },
-    {
-        patientid: "102",
-        name: "Sneha Kulkarni",
-        gender: "Female",
-        familycode: "FAM002",
-        mobilenumber: "9123456789"
-    },
-    {
-        patientid: "103",
-        name: "Aarav Sharma",
-        gender: "Male",
-        familycode: "FAM003",
-        mobilenumber: "9988776655"
-    },
-    {
-        patientid: "104",
-        name: "Anaya Patil",
-        gender: "Female",
-        familycode: "FAM004",
-        mobilenumber: "9834567890"
-    },
-    {
-        patientid: "105",
-        name: "Yash Verma",
-        gender: "Male",
-        familycode: "FAM005",
-        mobilenumber: "9001234567"
-    }
-  // Add more patients if needed
-];
+import axios from "axios"; // We'll use axios for API call (you can use fetch too)
 
 const Details = () => {
   const { id } = useParams(); // Patient ID from URL
   const navigate = useNavigate();
   const [patient, setPatient] = useState(null);
-
+  const [loading, setLoading] = useState(true); // For loading state
+  const [error, setError] = useState(null);     // For error handling
+ const { patientId } = useParams();
+  console.log("pateoinet",patientId)
   useEffect(() => {
-    const foundPatient = dummyPatients.find(p => p.patientid === id);
-    setPatient(foundPatient);
+    const fetchPatient = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8081/getPatientByID/${patientId}`);
+        setPatient(response.data);
+      } catch (err) {
+        setError("Failed to fetch patient data.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPatient();
   }, [id]);
+
+  if (loading) {
+    return <div className="p-6 text-center text-gray-500">Loading patient details...</div>;
+  }
+
+  if (error) {
+    return <div className="p-6 text-center text-red-500">{error}</div>;
+  }
 
   if (!patient) {
     return (
@@ -64,13 +46,13 @@ const Details = () => {
         <p><strong>Patient ID:</strong> {patient.patientid}</p>
         <p><strong>Name:</strong> {patient.name}</p>
         <p><strong>Gender:</strong> {patient.gender}</p>
-        <p><strong>DOB:</strong> {patient.dob}</p>
-        <p><strong>Email:</strong> {patient.email}</p>
+        <p><strong>DOB:</strong> {patient.dob || "N/A"}</p>
+        <p><strong>Email:</strong> {patient.email || "N/A"}</p>
         <p><strong>Mobile Number:</strong> {patient.mobilenumber}</p>
         <p><strong>Family Code:</strong> {patient.familycode}</p>
         <p><strong>VIP Status:</strong> {patient.vipstatus ? "Yes" : "No"}</p>
-        <p><strong>Referred By:</strong> {patient.referredby}</p>
-        <p><strong>Address:</strong> {patient.address}</p>
+        <p><strong>Referred By:</strong> {patient.referredby || "N/A"}</p>
+        <p><strong>Address:</strong> {patient.address || "N/A"}</p>
       </div>
       <button
         onClick={() => navigate(-1)}
