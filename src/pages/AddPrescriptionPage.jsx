@@ -12,12 +12,12 @@ const AddPrescriptionPage = () => {
     customMedicine: "",
     symptom: "",
     customSymptom: "",
-    price: ""
+    price: "",
   });
   const [discount, setDiscount] = useState(0);
   const navigate = useNavigate();
   const { patientId } = useParams();
-  console.log("pateoinet",patientId)
+  console.log("pateoinet", patientId);
   useEffect(() => {
     setMedicineList(["Paracetamol", "Ibuprofen", "Amoxicillin"]);
     setSymptomList(["Fever", "Cough", "Headache"]);
@@ -30,7 +30,9 @@ const AddPrescriptionPage = () => {
 
   const addPrescription = () => {
     const selectedMedicine =
-      formData.medicine === "other" ? formData.customMedicine : formData.medicine;
+      formData.medicine === "other"
+        ? formData.customMedicine
+        : formData.medicine;
     const selectedSymptom =
       formData.symptom === "other" ? formData.customSymptom : formData.symptom;
     const price = formData.price;
@@ -43,7 +45,7 @@ const AddPrescriptionPage = () => {
     const newPrescription = {
       medicine: selectedMedicine,
       symptom: selectedSymptom,
-      price: parseFloat(price)
+      price: parseFloat(price),
     };
 
     setPrescriptions((prev) => [...prev, newPrescription]);
@@ -54,25 +56,31 @@ const AddPrescriptionPage = () => {
       customMedicine: "",
       symptom: "",
       customSymptom: "",
-      price: ""
+      price: "",
     });
   };
 
-  const totalBill = prescriptions.reduce((sum, p) => sum + Number(p.price || 0), 0);
+  const totalBill = prescriptions.reduce(
+    (sum, p) => sum + Number(p.price || 0),
+    0
+  );
   const discountedTotal = totalBill - (totalBill * discount) / 100;
 
   const submitBill = async () => {
     try {
-      const response = await fetch("http://192.168.25.139:8081/myapp/statusUpdate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ patientid: patientId, status: "completed" }),
-      });
-  
+      const response = await fetch(
+        "http://192.168.25.139:8081/myapp/statusUpdate",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ patientid: patientId, status: "completed" }),
+        }
+      );
+
       if (!response.ok) {
         throw new Error("Failed to update status");
       }
-  
+
       Swal.fire({
         title: "Success!",
         text: "Prescription submitted and appointment marked as Completed.",
@@ -81,28 +89,27 @@ const AddPrescriptionPage = () => {
       }).then(() => {
         navigate("/appointments");
       });
-  
     } catch (error) {
       console.error("Error updating status:", error);
       Swal.fire({
         title: "Error!",
         text: "Something went wrong while submitting the prescription.",
         icon: "error",
-        confirmButtonText: "OK"
+        confirmButtonText: "OK",
       });
     }
   };
-  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-3xl">
         <h2 className="text-2xl font-bold mb-4">Add Prescription</h2>
 
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
-            <label className="block text-gray-700 font-medium mb-1">Medicine</label>
+            <label className="block text-gray-700 font-medium mb-1">
+              Medicine
+            </label>
             <select
               name="medicine"
               value={formData.medicine}
@@ -111,7 +118,9 @@ const AddPrescriptionPage = () => {
             >
               <option value="">Select</option>
               {medicineList.map((med, i) => (
-                <option key={i} value={med}>{med}</option>
+                <option key={i} value={med}>
+                  {med}
+                </option>
               ))}
               <option value="other">Other</option>
             </select>
@@ -119,7 +128,9 @@ const AddPrescriptionPage = () => {
 
           {formData.medicine === "other" && (
             <div>
-              <label className="block text-gray-700 font-medium mb-1">Enter Medicine</label>
+              <label className="block text-gray-700 font-medium mb-1">
+                Enter Medicine
+              </label>
               <input
                 type="text"
                 name="customMedicine"
@@ -132,7 +143,9 @@ const AddPrescriptionPage = () => {
           )}
 
           <div>
-            <label className="block text-gray-700 font-medium mb-1">Symptom</label>
+            <label className="block text-gray-700 font-medium mb-1">
+              Symptom
+            </label>
             <select
               name="symptom"
               value={formData.symptom}
@@ -141,7 +154,9 @@ const AddPrescriptionPage = () => {
             >
               <option value="">Select</option>
               {symptomList.map((sym, i) => (
-                <option key={i} value={sym}>{sym}</option>
+                <option key={i} value={sym}>
+                  {sym}
+                </option>
               ))}
               <option value="other">Other</option>
             </select>
@@ -149,7 +164,9 @@ const AddPrescriptionPage = () => {
 
           {formData.symptom === "other" && (
             <div>
-              <label className="block text-gray-700 font-medium mb-1">Enter Symptom</label>
+              <label className="block text-gray-700 font-medium mb-1">
+                Enter Symptom
+              </label>
               <input
                 type="text"
                 name="customSymptom"
@@ -162,7 +179,9 @@ const AddPrescriptionPage = () => {
           )}
 
           <div className="md:col-span-2">
-            <label className="block text-gray-700 font-medium mb-1">Price</label>
+            <label className="block text-gray-700 font-medium mb-1">
+              Price
+            </label>
             <input
               type="number"
               name="price"
@@ -174,10 +193,18 @@ const AddPrescriptionPage = () => {
           </div>
         </div>
 
-        <div className="flex justify-end mb-4">
+        <div className="flex justify-end mb-4 p-2">
+          
+            <button
+              onClick={() => navigate("/appointments")}
+              className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 m-2 rounded"
+            >
+              Back to Appointments
+            </button>
+       
           <button
             onClick={addPrescription}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 m-2 rounded"
           >
             Add to List
           </button>
@@ -188,22 +215,35 @@ const AddPrescriptionPage = () => {
           <table className="min-w-full border border-gray-300 rounded-lg overflow-hidden shadow-sm">
             <thead className="bg-blue-100 text-gray-800">
               <tr>
-                <th className="border px-4 py-2 text-left font-semibold">Medicine</th>
-                <th className="border px-4 py-2 text-left font-semibold">Symptom</th>
-                <th className="border px-4 py-2 text-left font-semibold">Price (₹)</th>
+                <th className="border px-4 py-2 text-left font-semibold">
+                  Medicine
+                </th>
+                <th className="border px-4 py-2 text-left font-semibold">
+                  Symptom
+                </th>
+                <th className="border px-4 py-2 text-left font-semibold">
+                  Price (₹)
+                </th>
               </tr>
             </thead>
             <tbody>
               {prescriptions.map((p, index) => (
                 <tr key={index}>
-                  <td className="border px-4 py-2 text-gray-700">{p.medicine}</td>
-                  <td className="border px-4 py-2 text-gray-700">{p.symptom}</td>
+                  <td className="border px-4 py-2 text-gray-700">
+                    {p.medicine}
+                  </td>
+                  <td className="border px-4 py-2 text-gray-700">
+                    {p.symptom}
+                  </td>
                   <td className="border px-4 py-2 text-gray-700">₹{p.price}</td>
                 </tr>
               ))}
               {prescriptions.length === 0 && (
                 <tr>
-                  <td colSpan="3" className="text-center py-4 text-gray-400 bg-white">
+                  <td
+                    colSpan="3"
+                    className="text-center py-4 text-gray-400 bg-white"
+                  >
                     No medicines added yet.
                   </td>
                 </tr>
@@ -214,7 +254,9 @@ const AddPrescriptionPage = () => {
           {prescriptions.length > 0 && (
             <div className="mt-6 space-y-3">
               <div className="flex justify-end items-center gap-2">
-                <label className="font-medium text-gray-700">Discount (%):</label>
+                <label className="font-medium text-gray-700">
+                  Discount (%):
+                </label>
                 <input
                   type="number"
                   min="0"
